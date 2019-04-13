@@ -10,5 +10,3 @@ Things To Be Done:
 4. Persistent updating on the view
 5. Add physics for objects
 6. Function for updating view
-7. add draw function
-
