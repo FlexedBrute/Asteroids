@@ -5,12 +5,12 @@ class astroid_model{
 	private:
 
 		struct spaceObject{
-			int x;
-			int y;
-			int dx;
-			int dy;
+			float x;
+			float y;
+			float dx;
+			float dy;
 			int size;
-			int angle;
+			float angle;
 		}
 
 		vector<spaceObject> asteroids;
@@ -18,6 +18,7 @@ class astroid_model{
 		spaceObject player;
 		bool dead = false;
 		int nScore = 0;
+		int lives = 3;
 
 		vector<pair<float, float>> ship_model;
 		vector<pair<float, float>> vec_astroid_model;
@@ -49,6 +50,7 @@ class astroid_model{
 			player.dx = 0.0f;
 			player.dy = 0.0f;
 			player.angle = 0.0f;
+			player.lives = 3;
 
 			bullets.clear()
 			asteroids.clear();
@@ -80,14 +82,14 @@ class astroid_model{
 
 			// clear screen (view)
 
-			if(){// left key held
+			if(m_keys[VK_LEFT].bHeld){// left key held
 				player.angle -= 6.0 * fElapsedTime;
 			}
-			if(){// right key held
+			if(m_keys[VK_RIGHT].bHeld){// right key held
 				player.angle += 6.0 * fElapsedTime;
 			}
 
-			if(){// thrust
+			if(m_keys[VK_UP].bHeld){// thrust
 				player.dx += sin(player.angle) * 20.0f * fElapsedTime;
 				player.dy += -cos(player.angle) * 20.0f * fElapsedTime;
 			}
