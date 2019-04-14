@@ -85,7 +85,6 @@ class astroid_model{
 			score = 0;
 		}
 
-		// FIX
 		void wrapCords(float x, float y, float &out_x, float &out_y){
 			out_x = x;
 			out_y = y;
@@ -94,9 +93,9 @@ class astroid_model{
 			if(x > (float)ScreenWidth())
 				out_x = x - (float)ScreenWidth();
 			if(y < 0.0)
-				out_y = y + (float)ScreenWidth();
-			if(y > (float)ScreenWidth())
-				out_y = y - (float)ScreenWidth();
+				out_y = y + (float)ScreenHeight();
+			if(y > (float)ScreenHeight())
+				out_y = y - (float)ScreenHeight();
 		}
 
 		// wills main part
