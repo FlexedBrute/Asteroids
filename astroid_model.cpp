@@ -13,18 +13,41 @@ class astroid_model{
 			float angle;
 		}
 
-		vector<spaceObject> asteroids;
-		vector<spaceObject> bullets;
+		std::vector<spaceObject> asteroids;
+		std::vector<spaceObject> bullets;
 		spaceObject player;
 		bool dead = false;
 		int nScore = 0;
-		int lives = 3;
 
-		vector<pair<float, float>> ship_model;
-		vector<pair<float, float>> vec_astroid_model;
+		std::vector<pair<float, float>> ship_model;
+		std::vector<pair<float, float>> vec_astroid_model;
 
 
 	public:
+
+		spaceObject getPlayer(){
+			return player;
+		}
+
+		int getScore(){
+			return nScore;
+		}
+
+		std::vector<pair<float, float>> getShipModel(){
+			return ship_model;
+		}
+
+		std::vector<pair<float, float>> getAsteroidModel(){
+			return vec_astroid_model;
+		}
+
+		std::vector<spaceObject> getBullets(){
+			return bullets;
+		}
+
+		std::vector<spaceObject> getAsteroids(){
+			return asteroids;
+		}
 
 		bool OnUserCreate(){
 			ship_model = {
@@ -62,6 +85,7 @@ class astroid_model{
 			score = 0;
 		}
 
+		// FIX
 		void wrapCords(float x, float y, float &out_x, float &out_y){
 			out_x = x;
 			out_y = y;
@@ -75,13 +99,8 @@ class astroid_model{
 				out_y = y - (float)ScreenWidth();
 		}
 
-		bool OnUserUpdate(float eElapsedTime){
-			if(dead){
-				resetGame();
-			}
-
-			// clear screen (view)
-
+		// wills main part
+		void update_movement(float fElapsedTime){
 			if(m_keys[VK_LEFT].bHeld){// left key held
 				player.angle -= 6.0 * fElapsedTime;
 			}
@@ -99,25 +118,44 @@ class astroid_model{
 
 			wrapCords(player.x, player.y, player.x, player.y);
 
-			// check for collision
-
-			if(){// firing bullets
-				bullets.push_back({0, player.x, player.y, 50.0f * sinf(player.angle), -50.0f * cosf(player.angle), 100.f});
-
+			if(m_keys[VK_SPACE].bReleased){
+				bullets.push_back({0, player.x, player.y, 50.0f * sinf(player.angle), -50.0f * cosf(player.angle), 100.0f});
 			}
-
 
 			for (auto &a : asteroids){
 				a.x += a.dx * fElapsedTime;
 				a.y += a.dy * fElapsedTime;
-				a.angle += 5.0f * fElapsedTime; // spin a fuckload
-
+				a.angle += 0.5f * fElapsedTime;
 				wrapCords(a.x, a.y, a.x, a.y);
-
-				// draw asteroids
 			}
 
-			
+			for (auto &b : bullets){
+				b.x += b.dx * fElapsedTime;
+				b.y += b.dy * fElapsedTime;
+				wrapCords(b.x, b.y, b.x, b.y);
+			}
+
+			std::vector<spaceObject>::iterator it;
+			for(it = bullets.begin(); it != bullets.end();){
+				if(it->x < 1 || it->y < 1 || it->x > ScreenWidth() || it->y > ScreenHeight()){
+					it = bullets.erase(it);
+				}else{
+					it++;
+				}
+			}
+
+		}
+
+		bool OnUserUpdate(float fElapsedTime){
+			if(dead){
+				resetGame();
+			}
+
+			update_movement(fElapsedTime); // will
+
+			// check for collision, connor
+
+			// update view, neil
 
 		}
 
