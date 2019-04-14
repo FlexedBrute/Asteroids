@@ -10,3 +10,7 @@ Things To Be Done:
 4. Persistent updating on the view
 5. Add physics for objects
 6. Function for updating view
+7. connor does collision
+8. will does movement
+9. neil does view
+10. Handle a invincibility state for when it is hit. Set enum/boolean for invinibility
