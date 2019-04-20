@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include "olcConsoleGameEngine.h"
+#include <stdio.h>
+#include "./olcConsoleGameEngine.h"
 
 // TODO: does this need to inherit game engine?
 class astroid_model : public olcConsoleGameEngine {
@@ -15,6 +16,7 @@ class astroid_model : public olcConsoleGameEngine {
 			float dx;
 			float dy;
 			float angle;
+		
 		}
 
 		std::vector<spaceObject> asteroids;
@@ -74,7 +76,9 @@ class astroid_model : public olcConsoleGameEngine {
 					standard_dev * cosf(((float)i / (float)points) * 6.28318f)));
 
 			}
+			
 			resetGame();
+			
 			return true;
 		}
 
@@ -122,6 +126,7 @@ class astroid_model : public olcConsoleGameEngine {
 		// Check if player model intersects with any objects in asteroid vector
 		bool detect_player_collision()
 		{
+			
 			for (auto asteroid& : asteroids)
 			{
 				return IsPointInsideSpaceObj(asteroid.x, asteroid.y, asteroid.size, player.x, player.y);
