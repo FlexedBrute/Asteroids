@@ -5,7 +5,6 @@
 
 // TODO: does this need to inherit game engine?
 // TODO: do we need code for moving asteroids when they collide?
-// TODO: removal algorithm will run after controller updates but before view updates to remove all spaceObjs with x value designated outside of gamespace
 class astroid_model{
 
 	private:
@@ -160,9 +159,27 @@ class astroid_model{
 				asteroidsHit.push_back({ (int)asteroid.size >> 1, asteroid.x, asteroid.y, 10.0f * sinf(angle2), 10.0f * cosf(angle1), 0.0f});
 			}
 
-			// remove old asteroid
+			// designate remove old asteroid
 			asteroid.x = -100;
 			nScore += 100;
+		}
+
+		// handler for level cleared
+		void handle_level_clear()
+		{
+			nScore += 1000;
+			asteroids.clear();
+			bullets.clear();
+
+			// add two more asteroids so that their coordinates don't intersect with the player
+			// coordinate wrap will be applied on next user update
+			asteroids.push_back({ (int)16, 30.0f * sinf(player.angle - 3.14159f/2.0f) + player.x,
+											  30.0f * cosf(player.angle - 3.14159f/2.0f) + player.y,
+											  10.0f * sinf(player.angle), 10.0f*cosf(player.angle), 0.0f });
+
+			asteroids.push_back({ (int)16, 30.0f * sinf(player.angle + 3.14159f/2.0f) + player.x,
+											  30.0f * cosf(player.angle + 3.14159f/2.0f) + player.y,
+											  10.0f * sinf(-player.angle), 10.0f*cosf(-player.angle), 0.0f });
 		}
 
 		// wills main part
@@ -245,6 +262,7 @@ class astroid_model{
 			}
 
 		}
+		
 
 		bool OnUserUpdate(float fElapsedTime){
 			if(dead){
@@ -265,6 +283,12 @@ class astroid_model{
 					/* TODO: possible code for moving the ship out of asteroid radius when it collides and is invincible? */
 					// handle_inv_collision()
 				}
+			}
+
+			// update for level cleared
+			if (asteroids.empty())
+			{
+				handle_level_clear();
 			}
 
 			/* I set a state for Dead in the enum which is different than the 'dead' bool so the view can handle any 
