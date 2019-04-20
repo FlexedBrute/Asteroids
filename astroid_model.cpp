@@ -1,21 +1,33 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include "olcConsoleGameEngine.h"
 
-
+// TODO: does this need to inherit game engine?
+// TODO: do we need code for moving asteroids when they collide?
+// TODO: removal algorithm will run after controller updates but before view updates to remove all spaceObjs with x value designated outside of gamespace
 class astroid_model{
 
 	private:
 
 		struct spaceObject{
+			int size;
 			float x;
 			float y;
 			float dx;
 			float dy;
-			int size;
 			float angle;
 		}
 
 		std::vector<spaceObject> asteroids;
 		std::vector<spaceObject> bullets;
 		spaceObject player;
+		// player state will dictate temporary invincibility after collision
+		enum PlayerState = { Full, Damaged, Dead }; 
+		PlayerState currState;
+		// set when player collision occurs -- stops damage for 10 iterations
+		// TODO: possibly change invCounter number
+		int invCounter;
 		bool dead = false;
 		int nScore = 0;
 
@@ -63,7 +75,7 @@ class astroid_model{
 					standard_dev * cosf(((float)i / (float)points) * 6.28318f)));
 
 			}
-			ResetGame();
+			resetGame();
 			return true;
 		}
 
@@ -81,6 +93,8 @@ class astroid_model{
 			asteroids.push_back({(int)16, 20.0f, 20.0f, 8.0f, -6.0f, 0.0f});
 			asteroids.push_back({(int)16, 100.0f, 20.0f, -5.0f, 3.0f, 0.0f});
 
+			invCounter = 0;
+			currState = Full;
 			dead = false;
 			score = 0;
 		}
@@ -96,6 +110,59 @@ class astroid_model{
 				out_y = y + (float)ScreenHeight();
 			if(y > (float)ScreenHeight())
 				out_y = y - (float)ScreenHeight();
+		}
+
+		/* -- Collision Detection -- Connors part */
+
+		// function for checking whether an asteroid and another space object collided
+		bool IsPointInsideSpaceObj(float posX1, float posY1, float radius, float posX2, float posY2)
+		{
+			return sqrt((posX2 - posX1)*(posX2 - posX1) + (posY2 - posY1)*(posY2 - posY1)) < radius;
+		}
+
+		// Check if player model intersects with any objects in asteroid vector
+		bool detect_player_collision()
+		{
+			for (auto asteroid& : asteroids)
+			{
+				return IsPointInsideSpaceObj(asteroid.x, asteroid.y, asteroid.size, player.x, player.y);
+			}
+		}
+
+		// handles collision based on player states
+		void handle_collision()
+		{
+			if (currState = Full)
+			{
+				currState = Damaged;
+				invCounter = 10;
+			}
+			else if (currState = Damaged)
+			{
+				currState = Dead;
+				dead = true;
+			}
+		}
+
+		// detects and handles bullet collisions with asteroids
+		void detect_bullet_collision(spaceObject &asteroid, spaceObject &bullet, std::vector<spaceObject> &asteroidsHit)
+		{
+			// designate bullet to be removed by removal algorithm
+			bullet.x = -100;
+
+			// split asteroids if size > 4
+			if (asteroid.size > 4)
+			{
+				float angle1 = ((float)rand() / (float)RAND_MAX) * 6.283185f;
+				float angle2 = ((float)rand() / (float)RAND_MAX) * 6.283185f;
+				// push two new asteroids, in random angles with size bitshifted 'down' by 1
+				asteroidsHit.push_back({ (int)asteroid.size >> 1, asteroid.x, asteroid.y, 10.0f * sinf(angle1), 10.0f * cosf(angle1), 0.0f});
+				asteroidsHit.push_back({ (int)asteroid.size >> 1, asteroid.x, asteroid.y, 10.0f * sinf(angle2), 10.0f * cosf(angle1), 0.0f});
+			}
+
+			// remove old asteroid
+			asteroid.x = -100;
+			nScore += 100;
 		}
 
 		// wills main part
@@ -128,12 +195,46 @@ class astroid_model{
 				wrapCords(a.x, a.y, a.x, a.y);
 			}
 
+			/* asteroids hit by player will be stored in a temporary vectory so as to not affect iteration
+			on current asteroid vector. They will then be split and later placed in current asteroid vector
+			or destroyed and removed by removal algorithm */
+			std::vector<spaceObject> asteroidsHit;
+
 			for (auto &b : bullets){
 				b.x += b.dx * fElapsedTime;
 				b.y += b.dy * fElapsedTime;
 				wrapCords(b.x, b.y, b.x, b.y);
+				b.angle -= 1.0f * fElapsedTime;
+
+				// detect bullet-asteroid collisions
+				for (auto &asteroid : asteroids)
+				{
+					if(IsPointInsideSpaceObj(asteroid.x, asteroid.y, asteroid.size, b.x, b.y))
+					{
+						detect_bullet_collision(asteroid, b, asteroidsHit);
+					}
+				}
 			}
 
+			// add newly created asteroids to current asteroid vector
+			for(auto a: asteroidsHit)
+			{
+				asteroids.push_back(a);
+			}
+
+			// TODO: check order of updates -- i.e. do movement -> check collision ship -> fire bullets -> do asteroid collision -> remove junk
+		
+
+			// remove old asteroid objects
+			for (auto &a : asteroids)
+			{
+				if (a.x < 1 || a.y < 1 || a.x > ScreenWidth() || a.y > ScreenHeight())
+				{
+					asteroids.erase(a);
+				}
+			}			
+			
+			// TODO: do you need an iteration condition in the for loop?
 			std::vector<spaceObject>::iterator it;
 			for(it = bullets.begin(); it != bullets.end();){
 				if(it->x < 1 || it->y < 1 || it->x > ScreenWidth() || it->y > ScreenHeight()){
@@ -149,11 +250,25 @@ class astroid_model{
 			if(dead){
 				resetGame();
 			}
-
+			// bullet collisions with asteroids are done at the same time bullet movements are updated
 			update_movement(fElapsedTime); // will
 
-			// check for collision, connor
+			// check for ship collisions with asteroids -- connor
+			if (detect_player_collision())
+			{
+				if (invCounter == 0)
+				{
+					handle_collision();
+				}
+				else 
+				{
+					/* TODO: possible code for moving the ship out of asteroid radius when it collides and is invincible? */
+					// handle_inv_collision()
+				}
+			}
 
+			/* I set a state for Dead in the enum which is different than the 'dead' bool so the view can handle any 
+			death animations/view updates before calling resetGame() */
 			// update view, neil
 
 		}
