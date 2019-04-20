@@ -4,7 +4,6 @@
 #include "olcConsoleGameEngine.h"
 
 // TODO: does this need to inherit game engine?
-// TODO: do we need code for moving asteroids when they collide?
 class astroid_model{
 
 	private:
@@ -239,9 +238,6 @@ class astroid_model{
 				asteroids.push_back(a);
 			}
 
-			// TODO: check order of updates -- i.e. do movement -> check collision ship -> fire bullets -> do asteroid collision -> remove junk
-		
-			// TODO: set object removal to separate function, only call when level is not cleared
 			// remove old asteroid objects
 			for (auto &a : asteroids)
 			{
@@ -272,17 +268,15 @@ class astroid_model{
 			update_movement(fElapsedTime); // will
 
 			// check for ship collisions with asteroids -- connor
-			if (detect_player_collision())
+			if (detect_player_collision() && invCounter == 0)
 			{
-				if (invCounter == 0)
-				{
-					handle_collision();
-				}
-				else 
-				{
-					/* TODO: possible code for moving the ship out of asteroid radius when it collides and is invincible? */
-					// handle_inv_collision()
-				}
+				handle_collision();
+			}
+			
+			// decrememnt invincibility counter on every userUpdate
+			if (invCounter != 0)
+			{
+				invCounter--;
 			}
 
 			// update for level cleared
