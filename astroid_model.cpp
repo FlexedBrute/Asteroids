@@ -23,7 +23,8 @@ class astroid_model{
 		// player state will dictate temporary invincibility after collision
 		enum PlayerState = { Full, Damaged, Dead }; 
 		PlayerState currState;
-		// set when player collision occurs -- stops damage for 10 iterations
+		// invCounter is the invincibility counter representing how many calls to onUserUpdate the player
+		// will be invincible for
 		// TODO: possibly change invCounter number
 		int invCounter;
 		bool dead = false;
