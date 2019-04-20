@@ -4,7 +4,7 @@
 #include "olcConsoleGameEngine.h"
 
 // TODO: does this need to inherit game engine?
-class astroid_model{
+class astroid_model : public olcConsoleGameEngine {
 
 	private:
 
