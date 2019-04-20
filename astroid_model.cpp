@@ -134,7 +134,7 @@ class astroid_model{
 			if (currState = Full)
 			{
 				currState = Damaged;
-				invCounter = 10;
+				invCounter = 100;
 			}
 			else if (currState = Damaged)
 			{
@@ -241,7 +241,7 @@ class astroid_model{
 
 			// TODO: check order of updates -- i.e. do movement -> check collision ship -> fire bullets -> do asteroid collision -> remove junk
 		
-
+			// TODO: set object removal to separate function, only call when level is not cleared
 			// remove old asteroid objects
 			for (auto &a : asteroids)
 			{
