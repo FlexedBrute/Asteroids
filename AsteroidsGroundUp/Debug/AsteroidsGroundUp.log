@@ -1,0 +1,29 @@
+﻿  astroid_model.cpp
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(151): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(229): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(233): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(275): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(293): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(303): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(304): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(339): warning C4244: 'argument': conversion from '_Ty2' to 'int', possible loss of data
+          with
+          [
+              _Ty2=float
+          ]
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(339): warning C4244: 'argument': conversion from '_Ty1' to 'int', possible loss of data
+          with
+          [
+              _Ty1=float
+          ]
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(338): warning C4244: 'argument': conversion from '_Ty2' to 'int', possible loss of data
+          with
+          [
+              _Ty2=float
+          ]
+C:\Users\willo\Programing\AsteroidsGroundUp\AsteroidsGroundUp\astroid_model.cpp(338): warning C4244: 'argument': conversion from '_Ty1' to 'int', possible loss of data
+          with
+          [
+              _Ty1=float
+          ]
+  AsteroidsGroundUp.vcxproj -> C:\Users\willo\Programing\AsteroidsGroundUp\Debug\AsteroidsGroundUp.exe
